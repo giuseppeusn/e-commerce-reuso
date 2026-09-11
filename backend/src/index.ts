@@ -3,19 +3,15 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to database
 connectDB();
 
 const app: Application = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running...');
 });
