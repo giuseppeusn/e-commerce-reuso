@@ -57,3 +57,63 @@ textarea {
     animation: none;
   }
 }
+/* Anel de foco padrão dos componentes do UI kit */
+.ds-focus-ring {
+  outline: none;
+}
+
+.ds-focus-ring:focus-visible {
+  box-shadow: var(--ds-focus);
+}
+
+/* Animações do Modal */
+@keyframes dsOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dsDialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dsPanelIn {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-ds-overlay {
+  animation: dsOverlayIn 0.2s ease-out both;
+}
+
+.animate-ds-dialog {
+  animation: dsDialogIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-ds-panel {
+  animation: dsPanelIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ds-overlay,
+  .animate-ds-dialog,
+  .animate-ds-panel {
+    animation: none;
+  }
+}
