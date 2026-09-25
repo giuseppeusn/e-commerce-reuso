@@ -53,8 +53,11 @@
   --color-reuso-neutral-strong: var(--ds-neutral-strong);
   --color-reuso-neutral-strong-foreground: var(--ds-neutral-strong-foreground);
 
+  --color-reuso-overlay: var(--ds-overlay);
+
   --shadow-reuso-sm: var(--ds-shadow-sm);
   --shadow-reuso-md: var(--ds-shadow-md);
+  --shadow-reuso-lg: var(--ds-shadow-lg);
 }
 
 /* =========================================
@@ -103,7 +106,7 @@
 
   --ds-success: #5a8c5e;
   --ds-success-foreground: #3f6742;
-  --ds-success-soft: #e2ecd f;
+  --ds-success-soft: #e2ecdf;
   --ds-success-strong: #3f6742;
   --ds-success-strong-foreground: #ffffff;
 
@@ -124,6 +127,7 @@
 
   --ds-shadow-sm: 0 1px 2px rgb(31 39 51 / 0.08);
   --ds-shadow-md: 0 8px 20px rgb(31 39 51 / 0.1);
+  --ds-shadow-lg: 0 24px 48px -12px rgb(31 39 51 / 0.28);
   --ds-focus: 0 0 0 3px rgb(31 39 51 / 0.2);
 }
 
@@ -196,5 +200,6 @@
 
   --ds-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
   --ds-shadow-md: 0 16px 32px rgb(0 0 0 / 0.6);
+  --ds-shadow-lg: 0 24px 56px -12px rgb(0 0 0 / 0.75);
   --ds-focus: 0 0 0 3px rgb(203 208 214 / 0.3);
 }
