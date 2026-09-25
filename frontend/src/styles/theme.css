@@ -1,0 +1,200 @@
+/* src/styles/theme.css */
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+
+  --text-2xs: calc(0.6875rem * var(--ds-font-scale));
+  --text-xs: calc(0.75rem * var(--ds-font-scale));
+  --text-sm: calc(0.875rem * var(--ds-font-scale));
+  --text-base: calc(1rem * var(--ds-font-scale));
+  --text-lg: calc(1.125rem * var(--ds-font-scale));
+  --text-xl: calc(1.25rem * var(--ds-font-scale));
+  --text-2xl: calc(1.5rem * var(--ds-font-scale));
+  --text-3xl: calc(1.875rem * var(--ds-font-scale));
+  --text-4xl: calc(2.25rem * var(--ds-font-scale));
+  --text-5xl: calc(3rem * var(--ds-font-scale));
+  --text-6xl: calc(3.75rem * var(--ds-font-scale));
+
+  --color-reuso-primary: var(--ds-primary);
+  --color-reuso-primary-hover: var(--ds-primary-hover);
+  --color-reuso-primary-foreground: var(--ds-primary-foreground);
+  --color-reuso-secondary: var(--ds-secondary);
+  --color-reuso-secondary-hover: var(--ds-secondary-hover);
+  --color-reuso-info: var(--ds-info);
+  --color-reuso-info-soft: var(--ds-info-soft);
+  --color-reuso-info-strong: var(--ds-info-strong);
+  --color-reuso-info-strong-foreground: var(--ds-info-strong-foreground);
+  --color-reuso-primary-soft: var(--ds-primary-soft);
+  --color-reuso-accent: var(--ds-accent);
+  --color-reuso-danger: var(--ds-danger);
+  --color-reuso-danger-foreground: var(--ds-danger-foreground);
+  --color-reuso-danger-soft: var(--ds-danger-soft);
+  --color-reuso-danger-light: var(--ds-danger-light);
+  --color-reuso-danger-strong: var(--ds-danger-strong);
+  --color-reuso-danger-strong-foreground: var(--ds-danger-strong-foreground);
+  --color-reuso-success: var(--ds-success);
+  --color-reuso-success-foreground: var(--ds-success-foreground);
+  --color-reuso-success-soft: var(--ds-success-soft);
+  --color-reuso-success-strong: var(--ds-success-strong);
+  --color-reuso-success-strong-foreground: var(--ds-success-strong-foreground);
+  --color-reuso-warning: var(--ds-warning);
+  --color-reuso-warning-foreground: var(--ds-warning-foreground);
+  --color-reuso-warning-soft: var(--ds-warning-soft);
+  --color-reuso-warning-strong: var(--ds-warning-strong);
+  --color-reuso-warning-strong-foreground: var(--ds-warning-strong-foreground);
+  --color-reuso-info-foreground: var(--ds-info-foreground);
+  --color-reuso-muted: var(--ds-text-muted);
+  --color-reuso-border: var(--ds-border);
+  --color-reuso-border-strong: var(--ds-border-strong);
+  --color-reuso-surface: var(--ds-surface);
+  --color-reuso-surface-subtle: var(--ds-surface-subtle);
+  --color-reuso-canvas: var(--ds-canvas);
+  --color-reuso-text: var(--ds-text);
+  --color-reuso-neutral-soft: var(--ds-neutral-soft);
+  --color-reuso-neutral-strong: var(--ds-neutral-strong);
+  --color-reuso-neutral-strong-foreground: var(--ds-neutral-strong-foreground);
+
+  --shadow-reuso-sm: var(--ds-shadow-sm);
+  --shadow-reuso-md: var(--ds-shadow-md);
+}
+
+/* =========================================
+   TEMA CLARO (LIGHT MODE)
+========================================= */
+:root {
+  color-scheme: light;
+
+  --ds-font-scale: 1;
+
+  /* Fundos e Bordas (Sage/Greige Base — inspirado no protótipo) */
+  --ds-canvas: #e7e8dd;
+  --ds-surface: #f8f8f3;
+  --ds-surface-subtle: #eeefe4;
+  --ds-border: #d8d9cc;
+  --ds-border-strong: #c2c3b3;
+
+  /* Textos */
+  --ds-text: #1f2733;
+  --ds-text-muted: #667085;
+
+  /* Cores Principais (Grafite escuro + Sage) */
+  --ds-primary: #1f2733;
+  --ds-primary-hover: #10151d;
+  --ds-primary-foreground: #ffffff;
+  --ds-primary-soft: #e4e6db;
+
+  --ds-secondary: #8a9a7e;
+  --ds-secondary-hover: #74836a;
+
+  /* Feedback Colors */
+  --ds-info: #5b8a9a;
+  --ds-info-foreground: #2e5d6b;
+  --ds-info-soft: #e3eef0;
+  --ds-info-strong: #2e5d6b;
+  --ds-info-strong-foreground: #ffffff;
+
+  --ds-accent: #c9a227;
+
+  --ds-danger: #b5493f;
+  --ds-danger-foreground: #8f372f;
+  --ds-danger-soft: #f6e2df;
+  --ds-danger-light: #b5493f3b;
+  --ds-danger-strong: #8f372f;
+  --ds-danger-strong-foreground: #ffffff;
+
+  --ds-success: #5a8c5e;
+  --ds-success-foreground: #3f6742;
+  --ds-success-soft: #e2ecd f;
+  --ds-success-strong: #3f6742;
+  --ds-success-strong-foreground: #ffffff;
+
+  --ds-warning: #c9a227;
+  --ds-warning-foreground: #93761b;
+  --ds-warning-soft: #f5edd3;
+  --ds-warning-strong: #93761b;
+  --ds-warning-strong-foreground: #ffffff;
+
+  --ds-neutral-soft: #eeefe4;
+  --ds-neutral-strong: #2f3742;
+  --ds-neutral-strong-foreground: #ffffff;
+  --ds-overlay: rgb(31 39 51 / 0.5);
+
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 6px;
+  --ds-radius-lg: 8px;
+
+  --ds-shadow-sm: 0 1px 2px rgb(31 39 51 / 0.08);
+  --ds-shadow-md: 0 8px 20px rgb(31 39 51 / 0.1);
+  --ds-focus: 0 0 0 3px rgb(31 39 51 / 0.2);
+}
+
+[data-font-size="large"] {
+  --ds-font-scale: 1.125;
+}
+
+[data-font-size="extra-large"] {
+  --ds-font-scale: 1.25;
+}
+
+/* =========================================
+   TEMA ESCURO (DARK MODE)
+========================================= */
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Fundos e Bordas */
+  --ds-canvas: #171b1f;
+  --ds-surface: #21262b;
+  --ds-surface-subtle: #2c3238;
+  --ds-border: #3a4149;
+  --ds-border-strong: #4d555e;
+
+  /* Textos */
+  --ds-text: #f2f3ee;
+  --ds-text-muted: #9aa1a9;
+
+  /* Cores Principais */
+  --ds-primary: #cbd0d6;
+  --ds-primary-hover: #e5e8eb;
+  --ds-primary-foreground: #171b1f;
+  --ds-primary-soft: #2f363d;
+
+  --ds-secondary: #9db38f;
+  --ds-secondary-hover: #85a075;
+
+  /* Feedback Colors */
+  --ds-info: #7fb0c0;
+  --ds-info-foreground: #cfe6ec;
+  --ds-info-soft: #1c3841;
+  --ds-info-strong: #4d8494;
+  --ds-info-strong-foreground: #ffffff;
+
+  --ds-accent: #e0bb4f;
+
+  --ds-danger: #d17a70;
+  --ds-danger-foreground: #f2cdc8;
+  --ds-danger-soft: #3a221f6b;
+  --ds-danger-strong: #b5493f;
+  --ds-danger-strong-foreground: #ffffff;
+
+  --ds-success: #86ac89;
+  --ds-success-foreground: #c9dccb;
+  --ds-success-soft: #22331f6b;
+  --ds-success-strong: #5a8c5e;
+  --ds-success-strong-foreground: #ffffff;
+
+  --ds-warning: #e0bb4f;
+  --ds-warning-foreground: #f2e1b3;
+  --ds-warning-soft: #3a2f0f;
+  --ds-warning-strong: #c9a227;
+  --ds-warning-strong-foreground: #ffffff;
+
+  --ds-neutral-soft: #2c3238;
+  --ds-neutral-strong: #7d858d;
+  --ds-neutral-strong-foreground: #ffffff;
+  --ds-overlay: rgb(0 0 0 / 0.7);
+
+  --ds-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+  --ds-shadow-md: 0 16px 32px rgb(0 0 0 / 0.6);
+  --ds-focus: 0 0 0 3px rgb(203 208 214 / 0.3);
+}
