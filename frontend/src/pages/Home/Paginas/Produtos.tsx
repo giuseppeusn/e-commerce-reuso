@@ -1,7 +1,14 @@
 // src/pages/Produtos/Produtos.tsx
+
+import Navbar from "../../Componentes/NavBar";
+
 const Produtos = () => {
   return (
     <div className="min-h-screen bg-reuso-canvas p-8">
+      <div>
+        <Navbar />
+      </div>
+
       <h1 className="text-2xl font-bold text-reuso-text">Produtos</h1>
     </div>
   );
