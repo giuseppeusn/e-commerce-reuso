@@ -1,5 +1,5 @@
 import { Cliente } from './Cliente.js';
-import { ItemCarrinho } from './ItemCarrinho.js';
+import { Produto } from './Produto.js';
 import { Pagamento } from './Pagamento.js';
 
 export class Pedido {
@@ -7,11 +7,11 @@ export class Pedido {
   private data: Date;
   private valorTotal: number;
   private statusEntrega: 'PROCESSANDO' | 'ENVIADO' | 'ENTREGUE' | 'CANCELADO';
-  private itens: ItemCarrinho[];
+  private itens: Produto[];
   private cliente: Cliente;
   private pagamento: Pagamento;
 
-  constructor(id: string, cliente: Cliente, itens: ItemCarrinho[], valorTotal: number, pagamento: Pagamento) {
+  constructor(id: string, cliente: Cliente, itens: Produto[], valorTotal: number, pagamento: Pagamento) {
     this.id = id;
     this.cliente = cliente;
     this.itens = itens;
