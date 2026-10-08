@@ -2,6 +2,7 @@ import express, { type Application, type Request, type Response } from 'express'
 import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
+import enderecoRoutes from './routes/enderecoRoutes.js';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running...');
 });
+
+app.use('/api/enderecos', enderecoRoutes);
 
 const PORT = process.env.PORT || 5000;
 
