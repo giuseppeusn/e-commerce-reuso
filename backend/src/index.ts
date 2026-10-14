@@ -1,3 +1,4 @@
+import { setServers } from "node:dns";
 import express, {
   type Application,
   type Request,
@@ -10,6 +11,7 @@ import enderecoRoutes from "./routes/enderecoRoutes.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
 
 dotenv.config();
+setServers(["8.8.8.8", "8.8.4.4"]);
 
 connectDB();
 
