@@ -3,7 +3,6 @@ import Usuario from '../models/UsuarioModel.js';
 
 class ProdutoService {
   async criarProduto(dadosProduto: Partial<IProduto>) {
-    // Procura por um fornecedor existente ou cria um mock com os campos obrigatórios (como o cpf)
     let fornecedor = await Usuario.findOne({ email: 'fornecedor@mock.com' });
     
     if (!fornecedor) {
@@ -12,7 +11,7 @@ class ProdutoService {
         email: 'fornecedor@mock.com',
         senhaHash: '123456',
         tipoConta: 'CLIENTE',
-        cpf: '000.000.000-00' // Adicionado para satisfazer a validação do schema de usuário
+        cpf: '000.000.000-00'
       });
     }
 
@@ -26,6 +25,18 @@ class ProdutoService {
 
   async listarProdutos() {
     return await Produto.find().populate('fornecedorId', 'nome email');
+  }
+
+  async atualizarProduto(id: string, dadosAtualizados: Partial<IProduto>) {
+    return await Produto.findByIdAndUpdate(id, dadosAtualizados, { new: true });
+  }
+
+  async aprovarProduto(id: string) {
+    return await Produto.findByIdAndUpdate(id, { statusAprovacao: 'APROVADO' }, { new: true });
+  }
+
+  async excluirProduto(id: string) {
+    return await Produto.findByIdAndDelete(id);
   }
 }
 
