@@ -1,7 +1,7 @@
 // src/pages/Home/Paginas/Produtos.tsx
 
 import React, { useState, useEffect } from 'react';
-import { PackagePlus, CheckCircle, Trash2, Edit } from "lucide-react";
+import { PackagePlus } from "lucide-react";
 import Navbar from "../../Componentes/NavBar";
 import { Button, Input, Modal } from "../../../components/ui";
 
@@ -53,7 +53,7 @@ const Produtos = () => {
     setNome(produto.nome);
     setDescricao(produto.descricao);
     setPreco(produto.preco.toString());
-    setFoto(produto.fotos[0] || '');
+    setFoto(produto.fotos && produto.fotos.length > 0 ? produto.fotos[0] : '');
     setIsModalOpen(true);
   };
 
@@ -73,7 +73,7 @@ const Produtos = () => {
           nome,
           descricao,
           preco: Number(preco),
-          fotos: [foto || 'default.jpg']
+          fotos: [foto || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30']
         }),
       });
 
@@ -125,41 +125,59 @@ const Produtos = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {produtos.map((produto) => (
-          <div key={produto._id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div>
-              <div className="flex justify-between items-start">
-                <h3 className="font-bold text-lg text-gray-800">{produto.nome}</h3>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  produto.statusAprovacao === 'APROVADO' 
-                    ? 'bg-green-50 text-green-700' 
-                    : 'bg-yellow-50 text-yellow-700'
-                }`}>
-                  {produto.statusAprovacao}
-                </span>
+          <div key={produto._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+            
+            {/* Exibição da Imagem do Produto no Card */}
+            {produto.fotos && produto.fotos.length > 0 && (
+              <div className="w-full h-48 bg-gray-100 overflow-hidden">
+                <img 
+                  src={produto.fotos[0]} 
+                  alt={produto.nome} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
               </div>
-              <p className="text-gray-600 text-sm mt-2">{produto.descricao}</p>
-            </div>
+            )}
 
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-green-600 font-bold text-lg">R$ {produto.preco.toFixed(2)}</span>
+            <div className="p-5 flex flex-col flex-grow justify-between">
+              <div>
+                <div className="flex justify-between items-start">
+                  <h3 className="font-bold text-lg text-gray-800">{produto.nome}</h3>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                    produto.statusAprovacao === 'APROVADO' 
+                      ? 'bg-green-50 text-green-700' 
+                      : 'bg-yellow-50 text-yellow-700'
+                  }`}>
+                    {produto.statusAprovacao}
+                  </span>
+                </div>
+                <p className="text-gray-600 text-sm mt-2">{produto.descricao}</p>
               </div>
 
-              {/* Botões de Ação do Administrador */}
-              <div className="flex items-center justify-between gap-2">
-                {produto.statusAprovacao !== 'APROVADO' && (
-                  <Button variant="success" size="sm" onClick={() => handleAprovar(produto._id)}>
-                    Aprovar
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-green-600 font-bold text-lg">R$ {produto.preco.toFixed(2)}</span>
+                </div>
+
+                {/* Botões de Ação */}
+                <div className="flex items-center justify-between gap-2">
+                  {produto.statusAprovacao !== 'APROVADO' && (
+                    <Button variant="success" size="sm" onClick={() => handleAprovar(produto._id)}>
+                      Aprovar
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" onClick={() => abrirModalEdicao(produto)}>
+                    Editar
                   </Button>
-                )}
-                <Button variant="outline" size="sm" onClick={() => abrirModalEdicao(produto)}>
-                  Editar
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleExcluir(produto._id)}>
-                  Excluir
-                </Button>
+                  <Button variant="ghost" size="sm" onClick={() => handleExcluir(produto._id)}>
+                    Excluir
+                  </Button>
+                </div>
               </div>
             </div>
+
           </div>
         ))}
       </div>
