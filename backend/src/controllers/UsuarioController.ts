@@ -11,20 +11,22 @@ class UsuarioController {
         return;
       }
 
-      const usuarioSalvo = await usuarioService.registrar({
+      const { usuario, token } = await usuarioService.registrar({
         nome,
         email,
         cpf,
         senha,
       });
 
-      // Retorna apenas os dados do usuário
       res.status(201).json({
-        id: usuarioSalvo._id,
-        nome: usuarioSalvo.nome,
-        email: usuarioSalvo.email,
-        cpf: usuarioSalvo.cpf,
-        tipoConta: usuarioSalvo.tipoConta,
+        token,
+        usuario: {
+          id: usuario._id,
+          nome: usuario.nome,
+          email: usuario.email,
+          cpf: usuario.cpf,
+          tipoConta: usuario.tipoConta,
+        },
       });
     } catch (error: any) {
       res
@@ -42,10 +44,11 @@ class UsuarioController {
         return;
       }
 
-      const usuario = await usuarioService.login(email, senha);
+      const { usuario, token } = await usuarioService.login(email, senha);
 
       res.status(200).json({
         message: "Login realizado com sucesso",
+        token,
         usuario: {
           id: usuario._id,
           nome: usuario.nome,
@@ -58,6 +61,48 @@ class UsuarioController {
       res
         .status(401)
         .json({ message: error.message || "Falha na autenticação" });
+    }
+  }
+
+  async atualizar(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { nome, email, cpf } = req.body;
+
+      const usuarioAtualizado = await usuarioService.atualizar(id, {
+        nome,
+        email,
+        cpf,
+      });
+
+      res.status(200).json({
+        message: "Dados atualizados com sucesso",
+        usuario: {
+          id: usuarioAtualizado._id,
+          nome: usuarioAtualizado.nome,
+          email: usuarioAtualizado.email,
+          cpf: usuarioAtualizado.cpf,
+          tipoConta: usuarioAtualizado.tipoConta,
+        },
+      });
+    } catch (error: any) {
+      res
+        .status(400)
+        .json({ message: error.message || "Erro ao atualizar dados" });
+    }
+  }
+
+  async excluir(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      await usuarioService.excluir(id);
+
+      res.status(200).json({ message: "Conta excluída com sucesso" });
+    } catch (error: any) {
+      res
+        .status(400)
+        .json({ message: error.message || "Erro ao excluir conta" });
     }
   }
 }
