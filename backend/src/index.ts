@@ -8,6 +8,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import enderecoRoutes from "./routes/enderecoRoutes.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
+import produtoRoutes from "./routes/ProdutoRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/enderecos", enderecoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/produtos", produtoRoutes);
 
 const PORT = process.env.PORT || 5000;
 
