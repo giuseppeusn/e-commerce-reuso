@@ -33,7 +33,6 @@ export class Pedido {
     return false;
   }
 
-  // Getters
   public getId(): string { return this.id; }
   public getValorTotal(): number { return this.valorTotal; }
   public getStatusEntrega(): string { return this.statusEntrega; }

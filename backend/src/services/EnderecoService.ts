@@ -1,27 +1,28 @@
-import Endereco, { type IEndereco } from '../models/EnderecoModel.js';
-import Usuario from '../models/UsuarioModel.js';
+import { type IEndereco } from '../models/EnderecoModel.js';
+import { InserirEndereco } from './templates/InserirEndereco.js';
+import { EditarEndereco } from './templates/EditarEndereco.js';
 
 class EnderecoService {
-  async criarEndereco(dadosEndereco: Partial<IEndereco>) {
-    // Procura por um usuário existente ou cria um mock
-    let usuario = await Usuario.findOne({ email: 'mock@mock.com' });
-    
-    if (!usuario) {
-      usuario = await Usuario.create({
-        nome: 'Usuário Teste',
-        email: 'mock@mock.com',
-        senhaHash: '123456',
-        tipoConta: 'CLIENTE'
-      });
+  private static instance: EnderecoService;
+
+  private constructor() { }
+
+  public static getInstance(): EnderecoService {
+    if (!EnderecoService.instance) {
+      EnderecoService.instance = new EnderecoService();
     }
+    return EnderecoService.instance;
+  }
 
-    const novoEndereco = new Endereco({
-      ...dadosEndereco,
-      usuario: usuario._id
-    });
+  async criarEndereco(dadosEndereco: Partial<IEndereco>) {
+    const operacao = new InserirEndereco();
+    return await operacao.execute(dadosEndereco);
+  }
 
-    return await novoEndereco.save();
+  async editarEndereco(idEndereco: string, dadosEndereco: Partial<IEndereco>) {
+    const operacao = new EditarEndereco();
+    return await operacao.execute(dadosEndereco, idEndereco);
   }
 }
 
-export default new EnderecoService();
+export default EnderecoService.getInstance();
