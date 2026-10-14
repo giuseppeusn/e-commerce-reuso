@@ -1,7 +1,7 @@
 // src/pages/Home/Paginas/Produtos.tsx
 
 import React, { useState, useEffect } from 'react';
-import { PackagePlus } from "lucide-react";
+import { PackagePlus, CheckCircle, Trash2, Edit } from "lucide-react";
 import Navbar from "../../Componentes/NavBar";
 import { Button, Input, Modal } from "../../../components/ui";
 
@@ -17,14 +17,14 @@ interface Produto {
 const Produtos = () => {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [produtoEmEdicao, setProdutoEmEdicao] = useState<Produto | null>(null);
   
-  // Estados do formulário de cadastro
+  // Estados do formulário
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [preco, setPreco] = useState('');
   const [foto, setFoto] = useState('');
 
-  // Busca os produtos cadastrados no backend (GET)
   const buscarProdutos = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/produtos');
@@ -39,15 +39,36 @@ const Produtos = () => {
     buscarProdutos();
   }, []);
 
-  // Envia o novo produto para o backend (POST)
-  const handleCadastrarProduto = async (e: React.FormEvent) => {
+  const abrirModalCadastro = () => {
+    setProdutoEmEdicao(null);
+    setNome('');
+    setDescricao('');
+    setPreco('');
+    setFoto('');
+    setIsModalOpen(true);
+  };
+
+  const abrirModalEdicao = (produto: Produto) => {
+    setProdutoEmEdicao(produto);
+    setNome(produto.nome);
+    setDescricao(produto.descricao);
+    setPreco(produto.preco.toString());
+    setFoto(produto.fotos[0] || '');
+    setIsModalOpen(true);
+  };
+
+  const handleSalvarProduto = async (e: React.FormEvent) => {
     e.preventDefault();
+    const url = produtoEmEdicao 
+      ? `http://localhost:5000/api/produtos/${produtoEmEdicao._id}`
+      : 'http://localhost:5000/api/produtos';
+    
+    const method = produtoEmEdicao ? 'PUT' : 'POST';
+
     try {
-      const response = await fetch('http://localhost:5000/api/produtos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome,
           descricao,
@@ -58,46 +79,86 @@ const Produtos = () => {
 
       if (response.ok) {
         setIsModalOpen(false);
-        setNome('');
-        setDescricao('');
-        setPreco('');
-        setFoto('');
-        buscarProdutos(); // Atualiza a listagem na tela
+        buscarProdutos();
       } else {
-        alert('Erro ao cadastrar produto');
+        alert('Erro ao salvar produto');
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
     }
   };
 
+  const handleAprovar = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/produtos/${id}/aprovar`, {
+        method: 'PATCH'
+      });
+      if (response.ok) buscarProdutos();
+    } catch (error) {
+      console.error('Erro ao aprovar:', error);
+    }
+  };
+
+  const handleExcluir = async (id: string) => {
+    if (confirm('Deseja realmente excluir este produto?')) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/produtos/${id}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) buscarProdutos();
+      } catch (error) {
+        console.error('Erro ao excluir:', error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-reuso-canvas p-8">
-      <div>
-        <Navbar />
-      </div>
+      <Navbar />
 
       <div className="flex justify-between items-center my-6">
-        <h1 className="text-2xl font-bold text-reuso-text">Produtos</h1>
-        {/* Botão padrão do Design System */}
-        <Button leftIcon={<PackagePlus />} onClick={() => setIsModalOpen(true)}>
+        <h1 className="text-2xl font-bold text-reuso-text">Gerenciamento de Produtos</h1>
+        <Button leftIcon={<PackagePlus />} onClick={abrirModalCadastro}>
           Novo Produto
         </Button>
       </div>
 
-      {/* Grid de Cards de Produtos (Tela 1 - Listagem) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {produtos.map((produto) => (
           <div key={produto._id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
             <div>
-              <h3 className="font-bold text-lg text-gray-800">{produto.nome}</h3>
-              <p className="text-gray-600 text-sm mt-1">{produto.descricao}</p>
+              <div className="flex justify-between items-start">
+                <h3 className="font-bold text-lg text-gray-800">{produto.nome}</h3>
+                <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                  produto.statusAprovacao === 'APROVADO' 
+                    ? 'bg-green-50 text-green-700' 
+                    : 'bg-yellow-50 text-yellow-700'
+                }`}>
+                  {produto.statusAprovacao}
+                </span>
+              </div>
+              <p className="text-gray-600 text-sm mt-2">{produto.descricao}</p>
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-              <span className="text-green-600 font-bold">R$ {produto.preco.toFixed(2)}</span>
-              <span className="text-xs px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-full font-medium">
-                {produto.statusAprovacao}
-              </span>
+
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-green-600 font-bold text-lg">R$ {produto.preco.toFixed(2)}</span>
+              </div>
+
+              {/* Botões de Ação do Administrador */}
+              <div className="flex items-center justify-between gap-2">
+                {produto.statusAprovacao !== 'APROVADO' && (
+                  <Button variant="success" size="sm" onClick={() => handleAprovar(produto._id)}>
+                    Aprovar
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={() => abrirModalEdicao(produto)}>
+                  Editar
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => handleExcluir(produto._id)}>
+                  Excluir
+                </Button>
+              </div>
             </div>
           </div>
         ))}
@@ -107,25 +168,25 @@ const Produtos = () => {
         <p className="text-gray-500 mt-12 text-center">Nenhum produto cadastrado no momento.</p>
       )}
 
-      {/* Modal de Cadastro (Tela 2 - Cadastro via Modal utilizando o Design System) */}
+      {/* Modal unificado para Cadastro e Edição */}
       <Modal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         headerIcon={<PackagePlus />}
-        title="Cadastrar Novo Produto"
-        description="Preencha os dados para disponibilizar um novo produto."
+        title={produtoEmEdicao ? "Editar Produto" : "Cadastrar Novo Produto"}
+        description="Preencha os dados do produto."
         footer={
           <>
             <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleCadastrarProduto}>
-              Salvar Produto
+            <Button onClick={handleSalvarProduto}>
+              {produtoEmEdicao ? "Salvar Alterações" : "Cadastrar"}
             </Button>
           </>
         }
       >
-        <form onSubmit={handleCadastrarProduto} className="grid gap-4">
+        <form onSubmit={handleSalvarProduto} className="grid gap-4">
           <Input 
             label="Nome do Produto" 
             placeholder="Ex: Teclado Mecânico" 
