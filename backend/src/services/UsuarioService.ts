@@ -1,6 +1,11 @@
+import crypto from "crypto";
 import Usuario, { type IUsuario } from "../models/UsuarioModel.js";
 
 class UsuarioService {
+  private gerarToken(): string {
+    return crypto.randomBytes(32).toString("hex");
+  }
+
   async registrar(dadosUsuario: {
     nome: string;
     email: string;
@@ -9,7 +14,6 @@ class UsuarioService {
   }) {
     const { nome, email, cpf, senha } = dadosUsuario;
 
-    // 1. Verifica se já existe um usuário com o mesmo e-mail ou CPF
     const usuarioExistente = await Usuario.findOne({
       $or: [{ email }, { cpf }],
     });
@@ -20,7 +24,6 @@ class UsuarioService {
       );
     }
 
-    // 2. Cria o novo usuário
     const novoUsuario = new Usuario({
       nome,
       email,
@@ -29,20 +32,45 @@ class UsuarioService {
       tipoConta: "CLIENTE",
     });
 
-    return await novoUsuario.save();
+    const usuarioSalvo = await novoUsuario.save();
+    const token = this.gerarToken();
+
+    return { usuario: usuarioSalvo, token };
   }
 
   async login(email: string, senhaTentativa: string) {
-    // 1. Busca o usuário pelo e-mail
     const usuario = await Usuario.findOne({ email });
+    if (!usuario || usuario.senhaHash !== senhaTentativa) {
+      throw new Error("Usuário ou senha inválidos.");
+    }
+
+    const token = this.gerarToken();
+
+    return { usuario, token };
+  }
+
+  async atualizar(
+    id: string,
+    dadosAtualizados: { nome?: string; email?: string; cpf?: string },
+  ) {
+    const usuario = await Usuario.findByIdAndUpdate(
+      id,
+      { $set: dadosAtualizados },
+      { new: true, runValidators: true },
+    );
+
     if (!usuario) {
-      throw new Error("Usuário ou senha inválidos.");
+      throw new Error("Usuário não encontrado.");
     }
 
-    if (usuario.senhaHash !== senhaTentativa) {
-      throw new Error("Usuário ou senha inválidos.");
-    }
+    return usuario;
+  }
 
+  async excluir(id: string) {
+    const usuario = await Usuario.findByIdAndDelete(id);
+    if (!usuario) {
+      throw new Error("Usuário não encontrado.");
+    }
     return usuario;
   }
 }
