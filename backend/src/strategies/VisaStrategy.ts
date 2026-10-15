@@ -10,9 +10,6 @@ export class VisaStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
     }
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
 }
 
 export class MastercardStrategy implements IBandeiraStrategy {
@@ -22,9 +19,6 @@ export class MastercardStrategy implements IBandeiraStrategy {
     }
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
-    }
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
     }
 }
 
@@ -36,9 +30,6 @@ export class EloStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
     }
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
 }
 
 export class HipercardStrategy implements IBandeiraStrategy {
@@ -49,9 +40,6 @@ export class HipercardStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return [13, 16, 19].includes(n.length) && luhn(n);
     }
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
 }
 
 export class AmexStrategy implements IBandeiraStrategy {
@@ -61,8 +49,5 @@ export class AmexStrategy implements IBandeiraStrategy {
     }
     validarNumero(n: string) {
         return n.length === 15 && luhn(n);
-    }
-    validarCvv(c: string) {
-        return /^\d{4}$/.test(c); // Amex usa CVV de 4 dígitos
     }
 }

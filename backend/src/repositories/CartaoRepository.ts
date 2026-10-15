@@ -18,34 +18,30 @@ class CartaoRepository {
   }
 
   public async listar(usuarioId: string) {
-    return CartaoModel.find({ usuario: usuarioId })
-      .select('-cvv')
-      .lean();
+    return CartaoModel.find({ usuario: usuarioId }).lean();
   }
 
   public async buscarPorId(id: string) {
-    return CartaoModel.findById(id)
-      .select('-cvv')
-      .lean();
+    return CartaoModel.findById(id).lean();
   }
 
   public async atualizar(
     id: string,
     dados: Record<string, unknown>
   ) {
+    const { nome, numero, banco, agencia, conta } = dados;
     return CartaoModel.findByIdAndUpdate(
       id,
-      { $set: dados },
+      { $set: { nome, numero, banco, agencia, conta } },
       {
         new: true,
         runValidators: true
       }
-    ).select('-cvv');
+    );
   }
 
   public async deletar(id: string) {
-    return CartaoModel.findByIdAndDelete(id)
-      .select('-cvv');
+    return CartaoModel.findByIdAndDelete(id);
   }
 }
 
