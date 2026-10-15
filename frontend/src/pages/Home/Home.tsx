@@ -1,20 +1,21 @@
 import Navbar from "../Componentes/NavBar";
-import imagemFundo from "./../../assets/imagem_fundo_home.jpg";
+// import imagemFundo from "./../../assets/imagem_fundo_home.jpg";
 
 const Home = () => {
+
   return (
     <div className="min-h-screen p-8 bg-reuso-canvas ">
       <Navbar />
       {/* imagem fundo */}
       <div>
         <div className="w-full px-8 mt-10">
-          <img
+          {/* <img
             src={imagemFundo}
             alt="Imagem de fundo"
             className="w-full h-full object-cover"
-          />
+          /> */}
 
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className=" flex items-center justify-center">
             <div className="max-w-2xl">
 
               <h1 className="text-3xl font-bold tracking-tight text-reuso-primary-foreground md:text-4xl lg:text-5xl">

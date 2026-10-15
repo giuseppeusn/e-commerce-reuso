@@ -9,6 +9,7 @@ import connectDB from "./config/db.js";
 import enderecoRoutes from "./routes/enderecoRoutes.js";
 import usuarioRoutes from "./routes/UsuarioRoutes.js";
 import produtoRoutes from "./routes/ProdutoRoutes.js";
+import cartaoRoutes from "./routes/cartaoRoute.js";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/enderecos", enderecoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/produtos", produtoRoutes);
+app.use("/api/cartoes", cartaoRoutes);
 
 const PORT = process.env.PORT || 5000;
 

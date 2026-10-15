@@ -22,7 +22,7 @@ class ProdutoController {
 
   async atualizar(req: Request, res: Response): Promise<void> {
     try {
-      const produtoAtualizado = await produtoService.atualizarProduto(req.params.id, req.body);
+      const produtoAtualizado = await produtoService.atualizarProduto(String(req.params.id), req.body);
       res.status(200).json(produtoAtualizado);
     } catch (error: any) {
       res.status(500).json({ message: 'Erro ao atualizar produto', error: error.message });
@@ -31,7 +31,7 @@ class ProdutoController {
 
   async aprovar(req: Request, res: Response): Promise<void> {
     try {
-      const produtoAprovado = await produtoService.aprovarProduto(req.params.id);
+      const produtoAprovado = await produtoService.aprovarProduto(String(req.params.id));
       res.status(200).json(produtoAprovado);
     } catch (error: any) {
       res.status(500).json({ message: 'Erro ao aprovar produto', error: error.message });
@@ -40,7 +40,7 @@ class ProdutoController {
 
   async excluir(req: Request, res: Response): Promise<void> {
     try {
-      await produtoService.excluirProduto(req.params.id);
+      await produtoService.excluirProduto(String(req.params.id));
       res.status(200).json({ message: 'Produto excluído com sucesso' });
     } catch (error: any) {
       res.status(500).json({ message: 'Erro ao excluir produto', error: error.message });
