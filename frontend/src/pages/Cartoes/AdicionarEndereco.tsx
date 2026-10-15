@@ -70,6 +70,7 @@ export const AdicinarEndereco = ({ onSaved, onCancel, initialData }: AdicionarEn
     const [banco, setBanco] = useState(initialData?.banco ?? "");
     const [agencia, setAgencia] = useState(initialData?.agencia ?? "");
     const [conta, setConta] = useState(initialData?.conta ?? "");
+    const [errorMessage, setErrorMessage] = useState("");
     const { usuario } = useAuth()
     const userId = usuario?.id || (usuario as any)?._id;;
     const info = useBin(cartao);
@@ -99,6 +100,7 @@ export const AdicinarEndereco = ({ onSaved, onCancel, initialData }: AdicionarEn
             onSaved();
         } catch (error) {
             console.error('Erro ao cadastrar cartão:', error);
+            setErrorMessage(error instanceof Error ? error.message : "Erro ao cadastrar cartão.");
         }
     }
 
@@ -127,9 +129,10 @@ export const AdicinarEndereco = ({ onSaved, onCancel, initialData }: AdicionarEn
             <Field label="Banco" value={banco} onChange={(e) => setBanco(e.target.value)} />
 
             <div className="grid grid-cols-2 gap-4">
-                <Field label="Agência" value={agencia} onChange={(e) => setAgencia(e.target.value)} inputMode="numeric" />
-                <Field label="Conta" value={conta} onChange={(e) => setConta(e.target.value)} inputMode="numeric" />
+                <Field label="cvv" value={agencia} onChange={(e) => setAgencia(e.target.value)} inputMode="numeric" />
+                <Field label="expiração" value={conta} onChange={(e) => setConta(e.target.value)} inputMode="numeric" />
             </div>
+            {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
             <div className="flex gap-3">
                 <Button type="button" variant="ghost" onClick={onCancel}>Cancelar</Button>
                 <Button onClick={handleSubmit}>{initialData ? "Salvar alterações" : "Salvar"}</Button>
