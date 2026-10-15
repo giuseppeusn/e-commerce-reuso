@@ -18,6 +18,15 @@ const AppRoutes = () => {
       <Route path="/cartoes" element={<Cartoes />} />
       <Route path="/lancamentos" element={<Lancamentos />} />
       <Route path="/conta" element={<Conta />} />
+      <Route path="/enderecos" element={<Conta initialTab="enderecos" />} />
+      <Route
+        path="/enderecos/novo"
+        element={<Conta initialTab="enderecos" initialView="novo" />}
+      />
+      <Route
+        path="/enderecos/editar/:id"
+        element={<Conta initialTab="enderecos" initialView="editar" />}
+      />
       <Route path="/design-system" element={<DesignSystem />} />
     </Routes>
   );

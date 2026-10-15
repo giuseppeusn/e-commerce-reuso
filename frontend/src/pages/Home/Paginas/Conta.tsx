@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { User, MapPin, CreditCard, Pencil } from "lucide-react";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../Componentes/NavBar";
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
 import { Input } from "../../../components/ui/Input";
 import { IconButton } from "../../../components/ui/IconButton";
 import { ConfirmDialog } from "../../../components/ui/ConfirmDialog";
+import { EnderecosTab } from "../../Enderecos/EnderecosTab";
 
 import { useAuth } from "../../../context/AuthContext";
-
-const API_BASE_URL = "http://localhost:5000/api";
+import { API_BASE_URL } from "../../../config/api";
 
 const formatCPF = (value: string) => {
   const numbersOnly = value.replace(/\D/g, "");
@@ -20,7 +21,29 @@ const formatCPF = (value: string) => {
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 };
 
-const Conta = () => {
+interface ContaProps {
+  initialTab?: "dados" | "enderecos" | "cartoes";
+  initialView?: "lista" | "novo" | "editar";
+}
+
+const Conta = ({ initialTab, initialView }: ContaProps) => {
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const urlTab = searchParams.get("tab") as "dados" | "enderecos" | "cartoes" | null;
+
+  const [activeTab, setActiveTab] = useState<"dados" | "enderecos" | "cartoes">(
+    initialTab || urlTab || "dados"
+  );
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    } else if (urlTab) {
+      setActiveTab(urlTab);
+    }
+  }, [initialTab, urlTab]);
+
   const { usuario, token, atualizarUsuario, logout } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -199,7 +222,12 @@ const Conta = () => {
               <nav className="w-full space-y-2">
                 <button
                   type="button"
-                  className="w-full flex items-center gap-3 px-3 py-2 text-sm font-bold text-reuso-text border-b-2 border-reuso-text text-left transition-colors"
+                  onClick={() => setActiveTab("dados")}
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "dados"
+                      ? "font-bold text-reuso-text border-b-2 border-reuso-text"
+                      : "font-semibold text-reuso-muted hover:text-reuso-text"
+                  }`}
                 >
                   <User className="size-5 shrink-0" />
                   <span>Dados pessoais</span>
@@ -207,7 +235,12 @@ const Conta = () => {
 
                 <button
                   type="button"
-                  className="w-full flex items-center gap-3 px-3 py-2 text-sm font-semibold text-reuso-muted hover:text-reuso-text text-left transition-colors"
+                  onClick={() => setActiveTab("enderecos")}
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "enderecos"
+                      ? "font-bold text-reuso-text border-b-2 border-reuso-text"
+                      : "font-semibold text-reuso-muted hover:text-reuso-text"
+                  }`}
                 >
                   <MapPin className="size-5 shrink-0" />
                   <span>Endereços</span>
@@ -215,87 +248,98 @@ const Conta = () => {
 
                 <button
                   type="button"
-                  className="w-full flex items-center gap-3 px-3 py-2 text-sm font-semibold text-reuso-muted hover:text-reuso-text text-left transition-colors"
+                  onClick={() => navigate("/cartoes")}
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "cartoes"
+                      ? "font-bold text-reuso-text border-b-2 border-reuso-text"
+                      : "font-semibold text-reuso-muted hover:text-reuso-text"
+                  }`}
                 >
                   <CreditCard className="size-5 shrink-0" />
-                  <span>Pagamentos</span>
+                  <span>Cartões</span>
                 </button>
               </nav>
             </aside>
 
-            <section className="md:col-span-8 flex flex-col items-center md:items-start md:pl-4">
-              <h1 className="text-xl font-bold uppercase tracking-wider text-reuso-text mb-6">
-                MEUS DADOS
-              </h1>
+            <section className="md:col-span-8 flex flex-col items-center md:items-start md:pl-4 w-full">
+              {activeTab === "enderecos" ? (
+                <EnderecosTab initialView={initialView} editId={id} />
+              ) : (
+                <>
+                  <h1 className="text-xl font-bold uppercase tracking-wider text-reuso-text mb-6">
+                    MEUS DADOS
+                  </h1>
 
-              {errorMsg && (
-                <div className="w-full max-w-md p-3 mb-4 text-sm text-red-600 bg-red-50 rounded-md border border-red-200">
-                  {errorMsg}
-                </div>
+                  {errorMsg && (
+                    <div className="w-full max-w-md p-3 mb-4 text-sm text-red-600 bg-red-50 rounded-md border border-red-200">
+                      {errorMsg}
+                    </div>
+                  )}
+
+                  <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="w-full max-w-md space-y-4"
+                  >
+                    <Input
+                      label="Nome completo"
+                      name="nome"
+                      value={userData.nome}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      shape="pill"
+                      variant="filled"
+                    />
+
+                    <Input
+                      label="Email"
+                      type="email"
+                      name="email"
+                      value={userData.email}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      shape="pill"
+                      variant="filled"
+                    />
+
+                    <Input
+                      label="CPF"
+                      name="cpf"
+                      value={userData.cpf}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      shape="pill"
+                      variant="filled"
+                      maxLength={14}
+                      placeholder="000.000.000-00"
+                    />
+
+                    <div className="pt-6 flex flex-col items-center gap-3">
+                      <Button
+                        type="button"
+                        variant="primary"
+                        shape="pill"
+                        uppercase
+                        size="md"
+                        className="px-10 bg-[#2C3338] hover:bg-[#1E2327] text-white"
+                        onClick={handlePrimaryButtonClick}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? "SALVANDO..." : isEditing ? "SALVAR" : "EDITAR"}
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="link"
+                        uppercase
+                        className="text-xs font-semibold text-reuso-danger hover:underline tracking-wider"
+                        onClick={() => setIsConfirmDeleteOpen(true)}
+                      >
+                        EXCLUIR MINHA CONTA
+                      </Button>
+                    </div>
+                  </form>
+                </>
               )}
-
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="w-full max-w-md space-y-4"
-              >
-                <Input
-                  label="Nome completo"
-                  name="nome"
-                  value={userData.nome}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  shape="pill"
-                  variant="filled"
-                />
-
-                <Input
-                  label="Email"
-                  type="email"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  shape="pill"
-                  variant="filled"
-                />
-
-                <Input
-                  label="CPF"
-                  name="cpf"
-                  value={userData.cpf}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  shape="pill"
-                  variant="filled"
-                  maxLength={14}
-                  placeholder="000.000.000-00"
-                />
-
-                <div className="pt-6 flex flex-col items-center gap-3">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    shape="pill"
-                    uppercase
-                    size="md"
-                    className="px-10 bg-[#2C3338] hover:bg-[#1E2327] text-white"
-                    onClick={handlePrimaryButtonClick}
-                    disabled={isSaving}
-                  >
-                    {isSaving ? "SALVANDO..." : isEditing ? "SALVAR" : "EDITAR"}
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="link"
-                    uppercase
-                    className="text-xs font-semibold text-reuso-danger hover:underline tracking-wider"
-                    onClick={() => setIsConfirmDeleteOpen(true)}
-                  >
-                    EXCLUIR MINHA CONTA
-                  </Button>
-                </div>
-              </form>
             </section>
           </div>
         </Card>

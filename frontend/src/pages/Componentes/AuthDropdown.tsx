@@ -7,6 +7,7 @@ import {
   Heart,
   LogOut,
   Loader2,
+  MapPin,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -17,6 +18,7 @@ import {
   ConfirmDialog,
 } from "../../components/ui";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config/api";
 
 type AuthMode = "login" | "register";
 
@@ -24,8 +26,6 @@ type AuthDropdownProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-const API_BASE_URL = "http://localhost:5000/api";
 
 const formatCPF = (value: string) => {
   const numbersOnly = value.replace(/\D/g, "");
@@ -132,6 +132,15 @@ const UserMenu = ({ usuario, onRequestLogout, onClose }: UserMenuProps) => (
     >
       <UserIcon size={18} />
       Conta
+    </Link>
+
+    <Link
+      to="/enderecos"
+      onClick={onClose}
+      className="flex items-center gap-3 px-2 py-2 text-sm font-medium hover:bg-reuso-canvas rounded-lg transition-colors"
+    >
+      <MapPin size={18} />
+      Endereços
     </Link>
 
     <Link

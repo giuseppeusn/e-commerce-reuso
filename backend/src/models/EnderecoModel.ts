@@ -10,6 +10,7 @@ export interface IEndereco extends Document {
   cidade: string;
   bairro: string;
   usuario: mongoose.Types.ObjectId;
+  favorito?: boolean;
 }
 
 const EnderecoSchema: Schema = new Schema({
@@ -21,7 +22,8 @@ const EnderecoSchema: Schema = new Schema({
   estado: { type: String, required: true },
   cidade: { type: String, required: true },
   bairro: { type: String, required: true },
-  usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true }
+  usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
+  favorito: { type: Boolean, default: false }
 }, { timestamps: true });
 
 export default mongoose.model<IEndereco>('Endereco', EnderecoSchema);

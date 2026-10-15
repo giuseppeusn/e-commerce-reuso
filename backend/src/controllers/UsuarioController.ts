@@ -66,7 +66,7 @@ class UsuarioController {
 
   async atualizar(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const { nome, email, cpf } = req.body;
 
       const usuarioAtualizado = await usuarioService.atualizar(id, {
@@ -94,7 +94,7 @@ class UsuarioController {
 
   async excluir(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
 
       await usuarioService.excluir(id);
 
