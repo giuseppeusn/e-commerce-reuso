@@ -13,6 +13,7 @@ import Cartoes from "../../Cartoes";
 import { useAuth } from "../../../context/AuthContext";
 import { API_BASE_URL } from "../../../config/api";
 
+// Função para formatar o CPF automaticamente (000.000.000-00)
 const formatCPF = (value: string) => {
   const numbersOnly = value.replace(/\D/g, "");
   return numbersOnly
@@ -28,12 +29,18 @@ interface ContaProps {
 }
 
 const Conta = ({ initialTab, initialView }: ContaProps) => {
+  // Parâmetros de rota e URL para controlar a aba ativa
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const urlTab = searchParams.get("tab") as "dados" | "enderecos" | "cartoes" | null;
+  const urlTab = searchParams.get("tab") as
+    | "dados"
+    | "enderecos"
+    | "cartoes"
+    | null;
 
+  // Estado da aba atual selecionada
   const [activeTab, setActiveTab] = useState<"dados" | "enderecos" | "cartoes">(
-    initialTab || urlTab || "dados"
+    initialTab || urlTab || "dados",
   );
 
   useEffect(() => {
@@ -44,8 +51,10 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     }
   }, [initialTab, urlTab]);
 
+  // Dados do usuário vindos do contexto de autenticação
   const { usuario, token, atualizarUsuario, logout } = useAuth();
 
+  // Estados locais para edição dos dados
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
     nome: "",
@@ -53,13 +62,15 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     cpf: "",
   });
 
-  // modal de exclusão
+  // Estado para controlar o modal de confirmação de exclusão
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
+  // Estados de carregamento e mensagens de erro
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Carrega os dados do usuário assim que o componente é montado
   useEffect(() => {
     if (usuario) {
       setUserData({
@@ -70,6 +81,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     }
   }, [usuario]);
 
+  // Atualiza os campos do formulário conforme o usuário digita
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -86,6 +98,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     }
   };
 
+  // Alterna entre ativar a edição e confirmar a gravação das alterações
   const handlePrimaryButtonClick = () => {
     if (isEditing) {
       handleConfirmEdit();
@@ -98,6 +111,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     return usuario?.id || (usuario as any)?._id;
   };
 
+  /* --- Conexão com o backend: Ação de Editar Usuário --- */
   const handleConfirmEdit = async () => {
     const userId = getUserId();
 
@@ -117,6 +131,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
         cpf: userData.cpf.replace(/\D/g, ""),
       };
 
+      // Requisição PUT para atualizar dados do usuário
       const response = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
         method: "PUT",
         headers: {
@@ -149,6 +164,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     }
   };
 
+  /* --- Conexão com o backend: Ação de Excluir Conta --- */
   const handleConfirmDelete = async () => {
     const userId = getUserId();
 
@@ -164,6 +180,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
     setErrorMsg(null);
 
     try {
+      // Requisição DELETE para remover o usuário
       const response = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
         method: "DELETE",
         headers: {
@@ -190,6 +207,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
 
   return (
     <div className="min-h-screen bg-reuso-canvas p-4 md:p-8">
+      {/* Barra de Navegação Superior */}
       <div className="mb-8">
         <Navbar />
       </div>
@@ -219,14 +237,16 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                 />
               </div>
 
+              {/* Botões de Troca de Aba */}
               <nav className="w-full space-y-2">
                 <button
                   type="button"
                   onClick={() => setActiveTab("dados")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "dados"
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "dados"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                    }`}
+                  }`}
                 >
                   <User className="size-5 shrink-0" />
                   <span>Dados pessoais</span>
@@ -235,10 +255,11 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                 <button
                   type="button"
                   onClick={() => setActiveTab("enderecos")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "enderecos"
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "enderecos"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                    }`}
+                  }`}
                 >
                   <MapPin className="size-5 shrink-0" />
                   <span>Endereços</span>
@@ -247,10 +268,11 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                 <button
                   type="button"
                   onClick={() => setActiveTab("cartoes")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "cartoes"
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
+                    activeTab === "cartoes"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                    }`}
+                  }`}
                 >
                   <CreditCard className="size-5 shrink-0" />
                   <span>Cartões</span>
@@ -258,23 +280,29 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
               </nav>
             </aside>
 
+            {/* Conteúdo Principal da Aba Selecionada */}
             <section className="md:col-span-8 flex flex-col items-center md:items-start md:pl-4 w-full">
               {activeTab === "enderecos" ? (
+                /* Aba de Endereços */
                 <EnderecosTab initialView={initialView} editId={id} />
               ) : activeTab === "cartoes" ? (
+                /* Aba de Cartões */
                 <Cartoes />
               ) : (
+                /* Aba de Dados Pessoais */
                 <>
                   <h1 className="text-xl font-bold uppercase tracking-wider text-reuso-text mb-6">
                     MEUS DADOS
                   </h1>
 
+                  {/* Exibição de Mensagem de Erro */}
                   {errorMsg && (
                     <div className="w-full max-w-md p-3 mb-4 text-sm text-red-600 bg-red-50 rounded-md border border-red-200">
                       {errorMsg}
                     </div>
                   )}
 
+                  {/* Formulário: Editar Dados do Usuário */}
                   <form
                     onSubmit={(e) => e.preventDefault()}
                     className="w-full max-w-md space-y-4"
@@ -312,6 +340,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                       placeholder="000.000.000-00"
                     />
 
+                    {/* Ações: Salvar / Editar e Excluir */}
                     <div className="pt-6 flex flex-col items-center gap-3">
                       <Button
                         type="button"
@@ -323,7 +352,11 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                         onClick={handlePrimaryButtonClick}
                         disabled={isSaving}
                       >
-                        {isSaving ? "SALVANDO..." : isEditing ? "SALVAR" : "EDITAR"}
+                        {isSaving
+                          ? "SALVANDO..."
+                          : isEditing
+                            ? "SALVAR"
+                            : "EDITAR"}
                       </Button>
 
                       <Button
@@ -344,7 +377,7 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
         </Card>
       </main>
 
-      {/* Diálogo de Confirmação para Exclusão de Conta */}
+      {/* Modal de Confirmação para Exclusão de Conta */}
       <ConfirmDialog
         open={isConfirmDeleteOpen}
         onClose={() => setIsConfirmDeleteOpen(false)}
