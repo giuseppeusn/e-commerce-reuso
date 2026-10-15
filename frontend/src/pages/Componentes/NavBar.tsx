@@ -3,6 +3,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Search, ShoppingCart, User } from "lucide-react";
 import { AuthDropdown } from "./AuthDropdown";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_LINKS = [
   { label: "Início", path: "/" },
@@ -13,6 +14,13 @@ const NAV_LINKS = [
 
 const Navbar = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { usuario } = useAuth(); // Corrigido: Chamado dentro do componente
+
+  // Monta a lista de links dinamicamente com base no perfil logado
+  const navLinks = [...NAV_LINKS];
+  if (usuario?.tipoConta === "ADMINISTRADOR") {
+    navLinks.push({ label: "Gerenciar Usuários", path: "/admin/usuarios" });
+  }
 
   return (
     <header className="flex items-center justify-between gap-6 border-b border-reuso-border bg-reuso-surface px-8 py-4">
@@ -22,7 +30,7 @@ const Navbar = () => {
         </div>
 
         <nav className="flex items-center gap-8">
-          {NAV_LINKS.map(({ label, path }) => (
+          {navLinks.map(({ label, path }) => (
             <NavLink
               key={path}
               to={path}
