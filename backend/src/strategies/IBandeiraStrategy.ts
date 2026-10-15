@@ -1,9 +1,6 @@
+// strategy: o que toda bandeira precisa saber fazer
 export interface IBandeiraStrategy {
     readonly nome: string;
-    reconhece(numero: string): boolean;
-    validarNumero(numero: string): boolean;
-<<<<<<< HEAD
-    validarCvv(cvv: string): boolean;
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
+    reconhece(numero: string): boolean;     // o número é dessa bandeira?
+    validarNumero(numero: string): boolean; // o número é válido?
 }

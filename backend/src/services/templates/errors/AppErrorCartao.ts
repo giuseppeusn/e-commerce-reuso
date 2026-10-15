@@ -1,6 +1,4 @@
-
-
-//strategy pattern
+// erros dos cartões, cada um já leva o status http (400 inválido, 404 não achou)
 export class AppErrorCartao extends Error {
     constructor(message: string, public readonly status: number) {
         super(message);

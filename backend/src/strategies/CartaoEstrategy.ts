@@ -1,3 +1,5 @@
+// o que o controller precisa que seja feito com cartões
+// (serve pra injetar a implementação no controller)
 export interface ICartaoStrategy {
   criar(dados: Record<string, unknown>): Promise<unknown>;
 

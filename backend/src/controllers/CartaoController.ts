@@ -7,11 +7,13 @@ import CartaoRepository from '../repositories/CartaoRepository.js';
 import CartaoService from '../services/CartaoService.js';
 import { BandeiraResolver } from '../strategies/BandeiraResolver.js';
 
+// o controller só recebe o pedido, chama quem resolve e responde com o status certo
 class CartaoController {
     constructor(
         private readonly service: ICartaoStrategy
     ) { }
 
+    // cria o cartão (passa pelo service pra validar antes de salvar)
     public criar = async (req: Request, res: Response) => {
         try {
             const cartao = await this.service.criar(req.body);
@@ -24,6 +26,7 @@ class CartaoController {
         }
     };
 
+    // lista os cartões de um usuário
     public listar = async (req: Request, res: Response) => {
         try {
             const cartoes = await this.service.listar(String(req.params.id));
@@ -36,6 +39,7 @@ class CartaoController {
         }
     };
 
+    // busca um cartão pelo id
     public buscarPorId = async (req: Request, res: Response) => {
         try {
             const cartao = await this.service.buscarPorId(
@@ -56,6 +60,7 @@ class CartaoController {
         }
     };
 
+    // atualiza um cartão
     public atualizar = async (req: Request, res: Response) => {
         try {
             const cartao = await this.service.atualizar(
@@ -77,6 +82,7 @@ class CartaoController {
         }
     };
 
+    // apaga um cartão
     public deletar = async (req: Request, res: Response) => {
         try {
             const cartao = await this.service.deletar(
@@ -100,11 +106,14 @@ class CartaoController {
     };
 }
 
+// aqui a gente monta tudo: o service recebe o repositório e o resolver de bandeiras
+// (os dois são singleton, então é sempre a mesma instância)
 const cartaoService = new CartaoService(
     CartaoRepository as unknown as ICartaoRepository,
     BandeiraResolver.getInstance()
 );
 
+// só o criar passa pelo service (precisa validar a bandeira), o resto vai direto no repositório
 const cartaoStrategy: ICartaoStrategy = {
     criar: (dados) => cartaoService.criar(
         String(dados.usuario),
