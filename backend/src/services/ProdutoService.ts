@@ -1,9 +1,10 @@
 import Produto, { type IProduto } from '../models/ProdutoModel.js';
 import Usuario from '../models/UsuarioModel.js';
 
-// ==========================================
-// 1. PADRÃO STRATEGY (Definido no mesmo arquivo)
-// ==========================================
+
+//Padrao de desconto (Strategy) estabelece um modo fixo de descontos, alterando apenas o valor da porcentagem conforme a situação
+
+
 export interface EstrategiaDesconto {
   calcular(precoOriginal: number): number;
 }
@@ -16,13 +17,13 @@ export class DescontoNormal implements EstrategiaDesconto {
 
 export class DescontoPromocional implements EstrategiaDesconto {
   calcular(precoOriginal: number): number {
-    return precoOriginal * 0.8; // 20% de desconto
+    return precoOriginal * 0.8; 
   }
 }
 
-// ==========================================
-// 2. PADRÃO TEMPLATE METHOD (Definido no mesmo arquivo)
-// ==========================================
+
+// Padrão de ordem da execução do algoritimo (validar->preparDados-salvarNoBanco) classes esppecificas apenas sobrescrevem metodos especificos
+
 export abstract class ProcessadorProdutoTemplate {
   public async processarCadastro(dados: any): Promise<any> {
     this.validarDados(dados);
@@ -62,7 +63,6 @@ export abstract class ProcessadorProdutoTemplate {
 
 export class ProcessadorProdutoFisico extends ProcessadorProdutoTemplate {
   protected prepararDadosEspecificos(dados: any) {
-    // Aplica estratégia de preço usando o Strategy opcionalmente aqui
     const estrategia = dados.emPromocao ? new DescontoPromocional() : new DescontoNormal();
     const precoFinal = estrategia.calcular(Number(dados.preco));
 
@@ -74,12 +74,10 @@ export class ProcessadorProdutoFisico extends ProcessadorProdutoTemplate {
   }
 }
 
-// ==========================================
-// 3. CLASSE DE SERVIÇO PRINCIPAL
-// ==========================================
+
+
 class ProdutoService {
   async criarProduto(dadosProduto: any) {
-    // Utilizando o Template Method embutido
     const processador = new ProcessadorProdutoFisico();
     return await processador.processarCadastro(dadosProduto);
   }
