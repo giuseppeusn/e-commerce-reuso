@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { User, MapPin, CreditCard, Pencil } from "lucide-react";
-import { useSearchParams, useNavigate, useParams } from "react-router-dom";
+import { useSearchParams, useParams } from "react-router-dom";
 import Navbar from "../../Componentes/NavBar";
 import { Button } from "../../../components/ui/Button";
 import { Card } from "../../../components/ui/Card";
@@ -8,6 +8,7 @@ import { Input } from "../../../components/ui/Input";
 import { IconButton } from "../../../components/ui/IconButton";
 import { ConfirmDialog } from "../../../components/ui/ConfirmDialog";
 import { EnderecosTab } from "../../Enderecos/EnderecosTab";
+import Cartoes from "../../Cartoes";
 
 import { useAuth } from "../../../context/AuthContext";
 import { API_BASE_URL } from "../../../config/api";
@@ -29,7 +30,6 @@ interface ContaProps {
 const Conta = ({ initialTab, initialView }: ContaProps) => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const urlTab = searchParams.get("tab") as "dados" | "enderecos" | "cartoes" | null;
 
   const [activeTab, setActiveTab] = useState<"dados" | "enderecos" | "cartoes">(
@@ -223,11 +223,10 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                 <button
                   type="button"
                   onClick={() => setActiveTab("dados")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
-                    activeTab === "dados"
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "dados"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                  }`}
+                    }`}
                 >
                   <User className="size-5 shrink-0" />
                   <span>Dados pessoais</span>
@@ -236,11 +235,10 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
                 <button
                   type="button"
                   onClick={() => setActiveTab("enderecos")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
-                    activeTab === "enderecos"
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "enderecos"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                  }`}
+                    }`}
                 >
                   <MapPin className="size-5 shrink-0" />
                   <span>Endereços</span>
@@ -248,12 +246,11 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
 
                 <button
                   type="button"
-                  onClick={() => navigate("/cartoes")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${
-                    activeTab === "cartoes"
+                  onClick={() => setActiveTab("cartoes")}
+                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors cursor-pointer ${activeTab === "cartoes"
                       ? "font-bold text-reuso-text border-b-2 border-reuso-text"
                       : "font-semibold text-reuso-muted hover:text-reuso-text"
-                  }`}
+                    }`}
                 >
                   <CreditCard className="size-5 shrink-0" />
                   <span>Cartões</span>
@@ -264,6 +261,8 @@ const Conta = ({ initialTab, initialView }: ContaProps) => {
             <section className="md:col-span-8 flex flex-col items-center md:items-start md:pl-4 w-full">
               {activeTab === "enderecos" ? (
                 <EnderecosTab initialView={initialView} editId={id} />
+              ) : activeTab === "cartoes" ? (
+                <Cartoes />
               ) : (
                 <>
                   <h1 className="text-xl font-bold uppercase tracking-wider text-reuso-text mb-6">

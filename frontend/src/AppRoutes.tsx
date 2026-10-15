@@ -7,7 +7,6 @@ import Promocoes from "./pages/Home/Paginas/Promocoes";
 import Lancamentos from "./pages/Home/Paginas/Lancamento";
 import Conta from "./pages/Home/Paginas/Conta";
 import DesignSystem from "./pages/DesignSystem";
-import Cartoes from "./pages/Cartoes";
 
 const AppRoutes = () => {
   return (
@@ -15,7 +14,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/produtos" element={<Produtos />} />
       <Route path="/promocoes" element={<Promocoes />} />
-      <Route path="/cartoes" element={<Cartoes />} />
+      <Route path="/cartoes" element={<Conta initialTab="cartoes" />} />
       <Route path="/lancamentos" element={<Lancamentos />} />
       <Route path="/conta" element={<Conta />} />
       <Route path="/enderecos" element={<Conta initialTab="enderecos" />} />
