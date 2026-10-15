@@ -10,7 +10,7 @@ export class VisaStrategy implements IBandeiraStrategy {
         return /^4/.test(n);
     }
     validarNumero(n: string) {
-        return n.length === 16 && luhn(n);
+        return [13, 16, 19].includes(n.length) && luhn(n);
     }
 }
 

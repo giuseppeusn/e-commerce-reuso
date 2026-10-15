@@ -20,7 +20,7 @@ export const cartaoService = {
         });
         if (!response.ok) {
             const data = await response.json().catch(() => ({}));
-            throw new Error(data.message || 'Erro ao cadastrar cartão.');
+            throw new Error(data.mensagem || data.message || 'Erro ao cadastrar cartão.');
         }
         return await response.json();
     },

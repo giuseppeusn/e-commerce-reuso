@@ -5,6 +5,7 @@ import type { CriarCartaoDTO } from '../services/DTO/CartaoDTO.js';
 
 import CartaoRepository from '../repositories/CartaoRepository.js';
 import CartaoService from '../services/CartaoService.js';
+import { AppErrorCartao } from '../services/templates/errors/AppErrorCartao.js';
 import { BandeiraResolver } from '../strategies/BandeiraResolver.js';
 
 // o controller só recebe o pedido, chama quem resolve e responde com o status certo
@@ -20,6 +21,12 @@ class CartaoController {
 
             return res.status(201).json(cartao);
         } catch (error) {
+            if (error instanceof AppErrorCartao) {
+                return res.status(error.status).json({
+                    mensagem: error.message
+                });
+            }
+
             return res.status(400).json({
                 mensagem: 'Não foi possível criar o cartão.'
             });
