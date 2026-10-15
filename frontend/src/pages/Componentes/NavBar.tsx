@@ -1,6 +1,8 @@
 // src/components/Navbar/Navbar.tsx
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Search, ShoppingCart, User } from "lucide-react";
+import { AuthDropdown } from "./AuthDropdown";
 
 const NAV_LINKS = [
   { label: "Início", path: "/" },
@@ -10,6 +12,8 @@ const NAV_LINKS = [
 ];
 
 const Navbar = () => {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
   return (
     <header className="flex items-center justify-between gap-6 border-b border-reuso-border bg-reuso-surface px-8 py-4">
       <div className="flex items-center gap-10">
@@ -58,13 +62,21 @@ const Navbar = () => {
           <ShoppingCart size={22} />
         </button>
 
-        <button
-          type="button"
-          aria-label="Minha conta"
-          className="text-reuso-text transition-colors hover:text-reuso-primary"
-        >
-          <User size={22} />
-        </button>
+        <div className="relative">
+          <button
+            type="button"
+            aria-label="Minha conta"
+            onClick={() => setIsAuthOpen((prev) => !prev)}
+            className="text-reuso-text transition-colors hover:text-reuso-primary focus:outline-none cursor-pointer"
+          >
+            <User size={22} />
+          </button>
+
+          <AuthDropdown
+            isOpen={isAuthOpen}
+            onClose={() => setIsAuthOpen(false)}
+          />
+        </div>
       </div>
     </header>
   );

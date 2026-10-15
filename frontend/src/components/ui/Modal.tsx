@@ -146,9 +146,9 @@ export const Modal = ({
           isPanel
             ? "animate-ds-panel h-full max-w-md"
             : cn(
-                "animate-ds-dialog max-h-[calc(100vh-2rem)] rounded-3xl",
-                sizeClasses[size],
-              ),
+              "animate-ds-dialog max-h-[calc(100vh-2rem)] rounded-3xl",
+              sizeClasses[size],
+            ),
           className,
         )}
         ref={dialogRef}
