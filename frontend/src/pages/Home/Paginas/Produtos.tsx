@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { PackagePlus } from "lucide-react";
 import Navbar from "../../Componentes/NavBar";
 import { Button, Input, Modal } from "../../../components/ui";
+import ProdutoMidia from "../../../components/produtos/ProdutoMidia";
+import { API_BASE_URL } from "../../../config/api";
 
 interface Produto {
   _id: string;
@@ -27,7 +29,7 @@ const Produtos = () => {
 
   const buscarProdutos = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/produtos');
+      const response = await fetch(`${API_BASE_URL}/produtos`);
       const data = await response.json();
       setProdutos(data);
     } catch (error) {
@@ -60,8 +62,8 @@ const Produtos = () => {
   const handleSalvarProduto = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = produtoEmEdicao 
-      ? `http://localhost:5000/api/produtos/${produtoEmEdicao._id}`
-      : 'http://localhost:5000/api/produtos';
+      ? `${API_BASE_URL}/produtos/${produtoEmEdicao._id}`
+      : `${API_BASE_URL}/produtos`;
     
     const method = produtoEmEdicao ? 'PUT' : 'POST';
 
@@ -90,7 +92,7 @@ const Produtos = () => {
 
   const handleAprovar = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/produtos/${id}/aprovar`, {
+      const response = await fetch(`${API_BASE_URL}/produtos/${id}/aprovar`, {
         method: 'PATCH'
       });
       if (response.ok) buscarProdutos();
@@ -102,7 +104,7 @@ const Produtos = () => {
   const handleExcluir = async (id: string) => {
     if (confirm('Deseja realmente excluir este produto?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/produtos/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/produtos/${id}`, {
           method: 'DELETE'
         });
         if (response.ok) buscarProdutos();
@@ -127,19 +129,8 @@ const Produtos = () => {
         {produtos.map((produto) => (
           <div key={produto._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
             
-            {/* Exibição da Imagem do Produto no Card */}
-            {produto.fotos && produto.fotos.length > 0 && (
-              <div className="w-full h-48 bg-gray-100 overflow-hidden">
-                <img 
-                  src={produto.fotos[0]} 
-                  alt={produto.nome} 
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
+            {/* Variabilidade: Exibição de Imagem 2D ou Visualizador 3D baseada no Feature Flag do Cliente */}
+            <ProdutoMidia produto={produto} />
 
             <div className="p-5 flex flex-col flex-grow justify-between">
               <div>

@@ -1,6 +1,5 @@
-// Gerencia o estado global de autenticação (dados do usuário e token de acesso)
-
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { API_BASE_URL } from "../config/api";
 
 export interface Usuario {
   id?: string;
@@ -10,6 +9,10 @@ export interface Usuario {
   cpf?: string;
   avatarUrl?: string;
   tipoConta?: "CLIENTE" | "FORNECEDOR" | "ADMINISTRADOR";
+  featureFlags?: {
+    visualizacao3D?: boolean;
+    [key: string]: any;
+  };
 }
 
 // Métodos expostos pelo contexto de autenticação
@@ -35,6 +38,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem("@reuso:token");
   });
+
+  // Sincroniza dados e featureFlags atualizados do banco ao carregar
+  useEffect(() => {
+    const currentId = usuario?.id || usuario?._id;
+    if (currentId) {
+      fetch(`${API_BASE_URL}/usuarios/${currentId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.usuario) {
+            setUsuario((prev) => {
+              if (!prev) return null;
+              const merged = { ...prev, ...data.usuario };
+              localStorage.setItem("@reuso:usuario", JSON.stringify(merged));
+              return merged;
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [usuario?.id, usuario?._id]);
+
 
   // Salva a sessão do usuário no login
   const login = (usuarioData: Usuario, tokenData?: string) => {

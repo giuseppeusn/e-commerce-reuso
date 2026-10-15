@@ -26,6 +26,7 @@ class UsuarioController {
           email: usuario.email,
           cpf: usuario.cpf,
           tipoConta: usuario.tipoConta,
+          featureFlags: usuario.featureFlags || { visualizacao3D: false },
         },
       });
     } catch (error: any) {
@@ -55,12 +56,35 @@ class UsuarioController {
           email: usuario.email,
           cpf: usuario.cpf,
           tipoConta: usuario.tipoConta,
+          featureFlags: usuario.featureFlags || { visualizacao3D: false },
         },
       });
     } catch (error: any) {
       res
         .status(401)
         .json({ message: error.message || "Falha na autenticação" });
+    }
+  }
+
+  async obterPorId(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const usuario = await usuarioService.buscarPorId(id);
+
+      res.status(200).json({
+        usuario: {
+          id: usuario._id,
+          nome: usuario.nome,
+          email: usuario.email,
+          cpf: usuario.cpf,
+          tipoConta: usuario.tipoConta,
+          featureFlags: usuario.featureFlags || { visualizacao3D: false },
+        },
+      });
+    } catch (error: any) {
+      res
+        .status(404)
+        .json({ message: error.message || "Usuário não encontrado" });
     }
   }
 
@@ -83,6 +107,7 @@ class UsuarioController {
           email: usuarioAtualizado.email,
           cpf: usuarioAtualizado.cpf,
           tipoConta: usuarioAtualizado.tipoConta,
+          featureFlags: usuarioAtualizado.featureFlags || { visualizacao3D: false },
         },
       });
     } catch (error: any) {

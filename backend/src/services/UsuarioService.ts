@@ -90,6 +90,16 @@ class UsuarioService {
     }
     return usuario;
   }
+
+  /* --- Ação: Buscar Usuário por ID --- */
+  async buscarPorId(id: string) {
+    const usuario = await Usuario.findById(id);
+    if (!usuario) {
+      throw new Error("Usuário não encontrado.");
+    }
+    return usuario;
+  }
 }
 
 export default new UsuarioService();
+

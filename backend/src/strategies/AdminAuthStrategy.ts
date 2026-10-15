@@ -17,6 +17,7 @@ export class AdminAuthStrategy extends AuthStrategy {
       email: usuario.email,
       cpf: usuario.cpf,
       tipoConta: usuario.tipoConta,
+      featureFlags: usuario.featureFlags || { visualizacao3D: false },
     };
   }
 }

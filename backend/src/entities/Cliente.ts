@@ -6,8 +6,8 @@ import { AvaliacaoEComentario } from './AvaliacaoEComentario.js';
 export class Cliente extends Usuario {
   private historicoPedidos: Pedido[];
 
-  constructor(id: string, nome: string, email: string, senhaHash: string) {
-    super(id, nome, email, senhaHash, 'CLIENTE');
+  constructor(id: string, nome: string, email: string, senhaHash: string, featureFlags: { visualizacao3D?: boolean; [key: string]: any } = {}) {
+    super(id, nome, email, senhaHash, 'CLIENTE', featureFlags);
     this.historicoPedidos = [];
   }
 

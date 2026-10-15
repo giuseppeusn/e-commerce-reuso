@@ -9,8 +9,9 @@ export abstract class Usuario {
   protected tipoConta: 'CLIENTE' | 'FORNECEDOR' | 'ADMINISTRADOR';
   protected enderecos: Endereco[];
   protected cartoes: Cartao[];
+  protected featureFlags: { visualizacao3D?: boolean; [key: string]: any };
 
-  constructor(id: string, nome: string, email: string, senhaHash: string, tipoConta: 'CLIENTE' | 'FORNECEDOR' | 'ADMINISTRADOR') {
+  constructor(id: string, nome: string, email: string, senhaHash: string, tipoConta: 'CLIENTE' | 'FORNECEDOR' | 'ADMINISTRADOR', featureFlags: { visualizacao3D?: boolean; [key: string]: any } = {}) {
     this.id = id;
     this.nome = nome;
     this.email = email;
@@ -18,6 +19,7 @@ export abstract class Usuario {
     this.tipoConta = tipoConta;
     this.enderecos = [];
     this.cartoes = [];
+    this.featureFlags = featureFlags;
   }
 
   public adicionarEndereco(endereco: Endereco): void {
@@ -43,4 +45,6 @@ export abstract class Usuario {
   public getTipoConta(): string { return this.tipoConta; }
   public getEnderecos(): Endereco[] { return this.enderecos; }
   public getCartoes(): Cartao[] { return this.cartoes; }
+  public getFeatureFlags(): { visualizacao3D?: boolean; [key: string]: any } { return this.featureFlags; }
+  public setFeatureFlag(flag: string, value: any): void { this.featureFlags[flag] = value; }
 }

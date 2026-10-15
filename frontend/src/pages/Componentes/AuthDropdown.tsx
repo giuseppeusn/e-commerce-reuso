@@ -10,7 +10,6 @@ import {
   LogOut,
   Loader2,
   MapPin,
-  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -225,6 +224,7 @@ const LoginForm = ({
           email: userObj.email || email,
           cpf: userObj.cpf || "",
           tipoConta: userObj.tipoConta,
+          featureFlags: userObj.featureFlags,
         },
         token,
       );
@@ -362,6 +362,7 @@ const RegisterForm = ({
           email: userObj.email || email,
           cpf: userObj.cpf || cleanCpf,
           tipoConta: userObj.tipoConta || "CLIENTE",
+          featureFlags: userObj.featureFlags,
         },
         token,
       );
