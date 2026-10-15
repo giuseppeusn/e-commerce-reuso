@@ -1,3 +1,5 @@
+// Menu suspenso para login/ cadastro ou Menu do Usuário Logado
+
 import { useState, useRef, useEffect } from "react";
 import {
   Mail,
@@ -8,6 +10,7 @@ import {
   LogOut,
   Loader2,
   MapPin,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -27,6 +30,7 @@ type AuthDropdownProps = {
   onClose: () => void;
 };
 
+// Formatação auxiliar de CPF
 const formatCPF = (value: string) => {
   const numbersOnly = value.replace(/\D/g, "");
   return numbersOnly
@@ -42,6 +46,7 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Fecha o dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -58,6 +63,7 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, isLogoutOpen, onClose]);
 
+  // Ação de confirmar Logout
   const handleConfirmLogout = () => {
     setIsLogoutOpen(false);
     logout();
@@ -68,6 +74,7 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
 
   return (
     <>
+      {/* Container do Dropdown */}
       <div
         ref={dropdownRef}
         className="absolute right-0 top-full mt-3 z-50 w-64"
@@ -75,6 +82,7 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
         <div className="absolute -top-1.5 right-3 h-3 w-3 rotate-45 border-l border-t border-reuso-border bg-reuso-surface z-10" />
 
         <Card className="relative z-0 p-4 shadow-2xl rounded-2xl bg-reuso-surface">
+          {/* Alterna entre usuário logado, tela de login ou tela de cadastro */}
           {usuario ? (
             <UserMenu
               usuario={usuario}
@@ -97,6 +105,7 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
         </Card>
       </div>
 
+      {/* Modal de confirmação para Sair (Logout) */}
       <ConfirmDialog
         open={isLogoutOpen}
         onClose={() => setIsLogoutOpen(false)}
@@ -111,9 +120,9 @@ export const AuthDropdown = ({ isOpen, onClose }: AuthDropdownProps) => {
   );
 };
 
-/* --- MENU USUÁRIO LOGADO --- */
+/* --- SUBCOMPONENTE: MENU DO USUÁRIO LOGADO --- */
 type UserMenuProps = {
-  usuario: { nome: string; email: string };
+  usuario: { nome: string; email: string; tipoConta?: string };
   onRequestLogout: () => void;
   onClose: () => void;
 };
@@ -121,10 +130,19 @@ type UserMenuProps = {
 const UserMenu = ({ usuario, onRequestLogout, onClose }: UserMenuProps) => (
   <div className="flex flex-col gap-2 py-1 text-reuso-text">
     <div className="pb-2 border-b border-reuso-border">
-      <p className="font-semibold text-sm truncate">{usuario.nome}</p>
+      <div className="flex items-center justify-between">
+        <p className="font-semibold text-sm truncate">{usuario.nome}</p>
+        {/* Badge para perfil ADMINISTRADOR */}
+        {usuario.tipoConta === "ADMINISTRADOR" && (
+          <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 px-1.5 py-0.5 rounded">
+            Admin
+          </span>
+        )}
+      </div>
       <p className="text-xs text-reuso-muted truncate">{usuario.email}</p>
     </div>
 
+    {/* Links de navegação */}
     <Link
       to="/conta"
       onClick={onClose}
@@ -152,6 +170,7 @@ const UserMenu = ({ usuario, onRequestLogout, onClose }: UserMenuProps) => (
       Favoritos
     </Link>
 
+    {/* Botão para Sair */}
     <button
       type="button"
       onClick={onRequestLogout}
@@ -163,7 +182,7 @@ const UserMenu = ({ usuario, onRequestLogout, onClose }: UserMenuProps) => (
   </div>
 );
 
-/* --- FORMULÁRIO DE LOGIN --- */
+/* --- SUBCOMPONENTE: FORMULÁRIO DE LOGIN --- */
 type AuthFormProps = {
   onSuccess: (userData: any, token?: string) => void;
   onClose: () => void;
@@ -179,12 +198,14 @@ const LoginForm = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /* --- Conexão com o backend --- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
+      // Requisição POST para logar o usuário
       const response = await fetch(`${API_BASE_URL}/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -203,6 +224,7 @@ const LoginForm = ({
           nome: userObj.nome || "Usuário",
           email: userObj.email || email,
           cpf: userObj.cpf || "",
+          tipoConta: userObj.tipoConta,
         },
         token,
       );
@@ -227,6 +249,7 @@ const LoginForm = ({
         </div>
       )}
 
+      {/* Campos do Formulário de Login */}
       <Input
         label="Email"
         type="email"
@@ -265,6 +288,7 @@ const LoginForm = ({
         <span className="bg-reuso-surface px-2">ou</span>
       </div>
 
+      {/* Alternar para formulário de cadastro */}
       <p className="mt-1 text-center text-xs text-reuso-muted">
         Não possui conta?{" "}
         <button
@@ -279,7 +303,7 @@ const LoginForm = ({
   );
 };
 
-/* --- FORMULÁRIO DE CADASTRO --- */
+/* --- SUBCOMPONENTE: FORMULÁRIO DE CADASTRO --- */
 const RegisterForm = ({
   onSuccess,
   onClose,
@@ -298,6 +322,7 @@ const RegisterForm = ({
     setCpf(formattedCpf);
   };
 
+  /* --- Conexão com o backend --- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -312,6 +337,7 @@ const RegisterForm = ({
     try {
       const cleanCpf = cpf.replace(/\D/g, "");
 
+      // Requisição POST para criar conta de usuário
       const response = await fetch(`${API_BASE_URL}/usuarios/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -335,6 +361,7 @@ const RegisterForm = ({
           nome: userObj.nome || nome,
           email: userObj.email || email,
           cpf: userObj.cpf || cleanCpf,
+          tipoConta: userObj.tipoConta || "CLIENTE",
         },
         token,
       );
@@ -359,6 +386,7 @@ const RegisterForm = ({
         </div>
       )}
 
+      {/* Campos do Formulário de Cadastro */}
       <Input
         label="Nome completo"
         placeholder="Seu nome"
@@ -424,6 +452,7 @@ const RegisterForm = ({
         {loading ? <Loader2 className="animate-spin" size={16} /> : "CADASTRAR"}
       </Button>
 
+      {/* Alternar para formulário de login */}
       <p className="mt-1 text-center text-xs text-reuso-muted">
         Já possui uma conta?{" "}
         <button

@@ -1,11 +1,14 @@
 import crypto from "crypto";
 import Usuario, { type IUsuario } from "../models/UsuarioModel.js";
+import { AuthContextStrategy } from "../strategies/AuthContextStrategy.js";
 
 class UsuarioService {
+  // Gera um token aleatório simples
   private gerarToken(): string {
     return crypto.randomBytes(32).toString("hex");
   }
 
+  /* --- adastrar Novo Usuário --- */
   async registrar(dadosUsuario: {
     nome: string;
     email: string;
@@ -14,6 +17,7 @@ class UsuarioService {
   }) {
     const { nome, email, cpf, senha } = dadosUsuario;
 
+    // Verifica se já existe o e-mail ou CPF cadastrado
     const usuarioExistente = await Usuario.findOne({
       $or: [{ email }, { cpf }],
     });
@@ -24,6 +28,7 @@ class UsuarioService {
       );
     }
 
+    // Criar Usuario
     const novoUsuario = new Usuario({
       nome,
       email,
@@ -38,17 +43,28 @@ class UsuarioService {
     return { usuario: usuarioSalvo, token };
   }
 
+  /* --- Ação: Autenticar / Fazer Login --- */
   async login(email: string, senhaTentativa: string) {
+    // Busca o usuário no banco de dados
     const usuario = await Usuario.findOne({ email });
-    if (!usuario || usuario.senhaHash !== senhaTentativa) {
+    if (!usuario) {
       throw new Error("Usuário ou senha inválidos.");
     }
 
-    const token = this.gerarToken();
+    //Seleciona a Strategy apropriada
+    const estrategia = AuthContextStrategy.obterEstrategia(usuario.tipoConta);
 
-    return { usuario, token };
+    // Executa a validação e autenticação completa
+    const resultado = await estrategia.autenticar(
+      usuario,
+      senhaTentativa,
+      this.gerarToken.bind(this),
+    );
+
+    return resultado;
   }
 
+  /* --- Ação: Atualizar Usuário --- */
   async atualizar(
     id: string,
     dadosAtualizados: { nome?: string; email?: string; cpf?: string },
@@ -66,6 +82,7 @@ class UsuarioService {
     return usuario;
   }
 
+  /* --- Ação: Excluir Usuário --- */
   async excluir(id: string) {
     const usuario = await Usuario.findByIdAndDelete(id);
     if (!usuario) {

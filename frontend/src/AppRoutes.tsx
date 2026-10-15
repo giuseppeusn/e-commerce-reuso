@@ -1,5 +1,6 @@
 // src/AppRoutes.tsx
-import { Route, Routes } from "react-router-dom";
+import { type ReactElement } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 import Produtos from "./pages/Home/Paginas/Produtos";
@@ -7,6 +8,20 @@ import Promocoes from "./pages/Home/Paginas/Promocoes";
 import Lancamentos from "./pages/Home/Paginas/Lancamento";
 import Conta from "./pages/Home/Paginas/Conta";
 import DesignSystem from "./pages/DesignSystem";
+import { useAuth } from "./context/AuthContext";
+import Usuarios from "./pages/Home/Paginas/Usuarios";
+
+// Componente para proteger rotas exclusivas do Administrador
+const AdminRoute = ({ children }: { children: ReactElement }) => {
+  const { usuario } = useAuth();
+
+  // Se não estiver logado ou não for ADMINISTRADOR, redireciona para a Home
+  if (!usuario || usuario.tipoConta !== "ADMINISTRADOR") {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 const AppRoutes = () => {
   return (
@@ -27,6 +42,16 @@ const AppRoutes = () => {
         element={<Conta initialTab="enderecos" initialView="editar" />}
       />
       <Route path="/design-system" element={<DesignSystem />} />
+
+      {/* Rota Protegida do Administrador */}
+      <Route
+        path="/admin/usuarios"
+        element={
+          <AdminRoute>
+            <Usuarios />
+          </AdminRoute>
+        }
+      />
     </Routes>
   );
 };

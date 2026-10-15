@@ -50,7 +50,7 @@ class UsuarioController {
         message: "Login realizado com sucesso",
         token,
         usuario: {
-          id: usuario._id,
+          id: usuario.id || usuario._id,
           nome: usuario.nome,
           email: usuario.email,
           cpf: usuario.cpf,
