@@ -9,6 +9,7 @@ export interface ICartao extends Document {
   usuario: mongoose.Types.ObjectId;
 }
 
+// como o cartão fica salvo no mongo (usuario = id do dono)
 const CartaoSchema: Schema = new Schema({
   nome: { type: String, required: true },
   numero: { type: String, required: true },

@@ -1,6 +1,8 @@
 import type { IBandeiraStrategy } from './IBandeiraStrategy.js';
 import { luhn } from '../middlewares/errorHandle.js';
 
+// strategy: uma classe por bandeira, todas com a mesma interface.
+// pra adicionar outra bandeira é só criar a classe e colocar na lista do BandeiraResolver
 
 export class VisaStrategy implements IBandeiraStrategy {
     readonly nome = 'VISA';
@@ -10,12 +12,6 @@ export class VisaStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
     }
-<<<<<<< HEAD
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
 }
 
 export class MastercardStrategy implements IBandeiraStrategy {
@@ -26,12 +22,6 @@ export class MastercardStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
     }
-<<<<<<< HEAD
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
 }
 
 export class EloStrategy implements IBandeiraStrategy {
@@ -42,12 +32,6 @@ export class EloStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 16 && luhn(n);
     }
-<<<<<<< HEAD
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
 }
 
 export class HipercardStrategy implements IBandeiraStrategy {
@@ -58,14 +42,9 @@ export class HipercardStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return [13, 16, 19].includes(n.length) && luhn(n);
     }
-<<<<<<< HEAD
-    validarCvv(c: string) {
-        return /^\d{3}$/.test(c);
-    }
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
 }
 
+// amex tem 15 dígitos
 export class AmexStrategy implements IBandeiraStrategy {
     readonly nome = 'AMEX';
     reconhece(n: string) {
@@ -74,10 +53,4 @@ export class AmexStrategy implements IBandeiraStrategy {
     validarNumero(n: string) {
         return n.length === 15 && luhn(n);
     }
-<<<<<<< HEAD
-    validarCvv(c: string) {
-        return /^\d{4}$/.test(c); // Amex usa CVV de 4 dígitos
-    }
-=======
->>>>>>> bfb7236ab62facf38a84eafe0ae8f6dccd31d008
 }
